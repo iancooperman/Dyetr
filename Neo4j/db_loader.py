@@ -2,7 +2,7 @@ import json
 import uuid
 from neo4j import GraphDatabase
 
-food_items = json.load(open('output.json'))
+food_items = json.load(open('usda survey data.json'))
 
 CALORIES = 'Energy'
 CARBOHYDRATES = 'Carbohydrate, by difference'
