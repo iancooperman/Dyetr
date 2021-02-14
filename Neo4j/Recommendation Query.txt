@@ -1,0 +1,11 @@
+MATCH (f:food) 
+WITH {item:id(f), weights: [f.calories, f.carbohydrates, f.protein, f.fat]} as foodData
+WITH collect(foodData) as data
+CALL gds.alpha.ml.ann.stream({
+	data: data,
+    algorithm: 'euclidean',
+    topK: 1,
+})
+YIELD item1, item2, similarity
+RETURN gds.util.asNode(item1).name AS food1, gds.util.asNode(item2).name AS food2, similarity
+ORDER BY similarity
