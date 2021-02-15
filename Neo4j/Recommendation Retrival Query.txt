@@ -1,0 +1,9 @@
+MATCH (u:User {id:'e493433a-6e29-11eb-8884-0028f8f916b2'})-[breakfast:ATE {meal:'breakfast'}]->(breakfastFood:food)
+MATCH (u:User {id:'e493433a-6e29-11eb-8884-0028f8f916b2'})-[lunch:ATE {meal:'lunch'}]->(lunchFood:food)
+MATCH (u:User {id:'e493433a-6e29-11eb-8884-0028f8f916b2'})-[dinner:ATE {meal:'dinner'}]->(dinnerFood:food)
+WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time) 
+	AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal
+
+MATCH (breakfastFood)-[similarity:SIMILAR]->(resultFood:food)
+WHERE similarity.score > 0
+RETURN collect(resultFood)[0]
