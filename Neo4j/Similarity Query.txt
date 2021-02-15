@@ -3,7 +3,7 @@ WITH {item:id(f), weights:[f.calories, f.carbohydrates, f.fat, f.protein]} AS fo
 WITH collect(foodData) AS data
 CALL gds.alpha.similarity.euclidean.write({
 	data: data,
-    topK: 1
+    topK: 3
 })
 YIELD nodes, similarityPairs
 RETURN nodes, similarityPairs
