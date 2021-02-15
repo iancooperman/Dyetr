@@ -1,0 +1,9 @@
+MATCH (f:food)
+WITH {item:id(f), weights:[f.calories, f.carbohydrates, f.fat, f.protein]} AS foodData
+WITH collect(foodData) AS data
+CALL gds.alpha.similarity.euclidean.write({
+	data: data,
+    topK: 1
+})
+YIELD nodes, similarityPairs
+RETURN nodes, similarityPairs
