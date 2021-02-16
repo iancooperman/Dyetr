@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import Flask, request
 from neo4j import GraphDatabase
 
 # enum
@@ -17,25 +16,28 @@ def recommend():
         user_id = request.args.get('user_id')
         meal = request.args.get('meal')
     except KeyError as e:
-        return {"status": f"{e}"}, 500
+        return ({"status": f"{e}"}, 500)
 
     # build up the Neo4j query
-    query = """MATCH (u:User {id:'{user_id}'})-[breakfast:ATE {meal:'breakfast'\}]->(breakfastFood:food)
-            MATCH (u:User {id:'{user_id}'})-[lunch:ATE {meal:'lunch'}]->(lunchFood:food)
-            MATCH (u:User {id:'{user_id}'})-[dinner:ATE {meal:'dinner'}]->(dinnerFood:food)
-            WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time) 
-                AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal
-
-            MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)
-            WHERE similarity.score > 0
-            RETURN collect(resultFood)[0]""".format(user_id=user_id, meal=meal)
-
+    query = (" ".join([
+        "MATCH (u:User {id: $id})-[breakfast:ATE {meal: 'breakfast'}]->(b:food)",
+        "MATCH (u:User {id: $id})-[lunch:ATE {meal: 'lunch'}]->(l:food)",
+        "MATCH (u:User {id: $id})-[dinner:ATE {meal: 'dinner'}]->(d:food)",
+        "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
+        "AND b.calories + l.calories + d.calories < u.calorieGoal",
+        "MATCH ($meal)-[similarity:SIMILAR]->(resultFood:food)",
+        "WHERE similarity.score > 0",
+        "RETURN collect(resultFood)[0]"
+    ]))
+    
 
     db_driver = GraphDatabase.driver(CONNECTION_STRING, auth=(USER_NAME, PASSWORD))
     result = None
     with db_driver.session() as session:
-        result = session.run(query)
+        result = session.run(query, id=user_id, meal=meal)
 
     db_driver.close()
-    return result, 200
+    return (result, 200)
 
+if __name__ == '__main__':
+    app.run()
