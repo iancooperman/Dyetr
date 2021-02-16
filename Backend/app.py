@@ -20,12 +20,12 @@ def recommend():
 
     # build up the Neo4j query
     query = (" ".join([
-        "MATCH (u:User {id: $id})-[breakfast:ATE {meal: 'breakfast'}]->(b:food)",
-        "MATCH (u:User {id: $id})-[lunch:ATE {meal: 'lunch'}]->(l:food)",
-        "MATCH (u:User {id: $id})-[dinner:ATE {meal: 'dinner'}]->(d:food)",
+        f"MATCH (u:User {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
+        f"MATCH (u:User {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
+        f"MATCH (u:User {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
         "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
-        "AND b.calories + l.calories + d.calories < u.calorieGoal",
-        "MATCH ($meal)-[similarity:SIMILAR]->(resultFood:food)",
+        "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal",
+        f"MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)",
         "WHERE similarity.score > 0",
         "RETURN collect(resultFood)[0]"
     ]))
