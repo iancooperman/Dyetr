@@ -1,5 +1,6 @@
 from flask import Flask, request
 from neo4j import GraphDatabase
+from db import db
 
 # enum
 CONNECTION_STRING = 'bolt://localhost:7687'
