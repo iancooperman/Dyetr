@@ -43,7 +43,7 @@ def recommend():
     
     return (response, 200)
 
-@app.route('/v1/food', methods = ['GET'])
+@app.route('/api/v1/food', methods = ['GET'])
 def get_food():
     food_id = request.args.get('id')
     resp = _db_driver.find_food_item_by_id(food_id)
@@ -52,7 +52,7 @@ def get_food():
     else:
         return '', 404
 
-@app.route('/v1/food', methods=['POST'])
+@app.route('/api/v1/food', methods=['POST'])
 def post_food():
     item = request.get_json()
     _db_driver.create_food_tem(item['id'], item['name'], item['calories'], item['carbohydrates'], item['fat'], item['protein'])
