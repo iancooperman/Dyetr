@@ -12,7 +12,7 @@ PASSWORD = 'password'
 db_driver = GraphDatabase.driver(CONNECTION_STRING, auth=(USER_NAME, PASSWORD))
 
 
-@app.route('/api/v1/ingest', methods=["POST", "GET"])
+@app.route('/api/v1/ingest', methods=["POST"])
 def add_food():
     id = uuid.uuid1()
     food_item = request.get_json()
