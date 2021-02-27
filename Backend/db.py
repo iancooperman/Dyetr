@@ -27,7 +27,7 @@ class db:
         query = "MATCH (f:food) WHERE "
 
         words = search_query.split(" ")
-        contains_expressions = [f"f.food CONTAINS {word} " for word in words]
+        contains_expressions = [f"f.name CONTAINS '{word}' " for word in words]
 
         query += "AND ".join(contains_expressions)
         query += "RETURN collect(f) AS foods"
@@ -37,6 +37,6 @@ class db:
             record = result.single()
 
             if record:
-                return record.data()["foods"]
+                return record.data()
             else:
                 return None
