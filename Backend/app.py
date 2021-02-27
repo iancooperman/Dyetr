@@ -61,6 +61,11 @@ def post_food():
 @app.route('/api/v1/search', methods=['GET'])
 def search():
     search_query = request.args.get('q')
+    
+    try:
+        assert search_query != None
+    except AssertionError as e:
+        return {"status": "You must provide a search query under parameter 'q'"}, 500
 
     resp = _db_driver.find_food_items_by_text_search(search_query)
     if resp:
