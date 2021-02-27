@@ -22,3 +22,22 @@ class db:
         query = 'CREATE (f:food {id: $id, name: $name, calories: $calories, carbohydrates: $carbohydrates,  fat: $fat, protein: $protein})'
         with self._db_driver.session() as session:
             session.run(query, id = food_id, name = item_name, calories = calories, carbohydrates = carbs, fat = fat, protein = protein)
+
+    def recommend_foods(self, user_id, meal):
+        query = (" ".join([
+        f"MATCH (u:User {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
+        f"MATCH (u:User {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
+        f"MATCH (u:User {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
+        "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
+        "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal",
+        f"MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)",
+        "WHERE similarity.score > 0",
+        "RETURN collect(resultFood) AS recommendations"
+    ]))
+
+        with self._db_driver.session() as session:
+            result = session.run(query, id=user_id, meal=meal)
+            record = result.single()
+            response = record.data()
+
+        return response
