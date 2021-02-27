@@ -22,3 +22,21 @@ class db:
         query = 'CREATE (f:food {id: $id, name: $name, calories: $calories, carbohydrates: $carbohydrates,  fat: $fat, protein: $protein})'
         with self._db_driver.session() as session:
             session.run(query, id = food_id, name = item_name, calories = calories, carbohydrates = carbs, fat = fat, protein = protein)
+
+    def find_food_items_by_text_search(self, search_query):
+        query = "MATCH (f:food) WHERE "
+
+        words = search_query.split(" ")
+        contains_expressions = [f"f.food CONTAINS {word} " for word in words]
+
+        query += "AND ".join(contains_expressions)
+        query += "RETURN collect(f) AS foods"
+
+        with self._db_driver.session() as session:
+            result = session.run(query)
+            record = result.single()
+
+            if record:
+                return record.data()["foods"]
+            else:
+                return None

@@ -58,6 +58,10 @@ def post_food():
     _db_driver.create_food_tem(item['id'], item['name'], item['calories'], item['carbohydrates'], item['fat'], item['protein'])
     return '', 201
 
+@app.route('/api/v1/search', methods=['GET'])
+def search():
+    pass
+
 db_driver.close()
 
 if __name__ == '__main__':
