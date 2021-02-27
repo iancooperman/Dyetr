@@ -60,7 +60,13 @@ def post_food():
 
 @app.route('/api/v1/search', methods=['GET'])
 def search():
-    pass
+    search_query = request.args.get('q')
+
+    resp = _db_driver.find_food_items_by_text_search(search_query)
+    if resp:
+        return resp, 200
+    else:
+        return "", 500
 
 db_driver.close()
 
