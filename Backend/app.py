@@ -58,6 +58,21 @@ def post_food():
     _db_driver.create_food_tem(item['id'], item['name'], item['calories'], item['carbohydrates'], item['fat'], item['protein'])
     return '', 201
 
+@app.route('/api/v1/user', methods=['GET'])
+def get_user():
+    user_id = request.args.get('id')
+    resp = _db_driver.get_user_by_id(user_id)
+    if resp:
+        return (resp, 200)
+    else:
+        return ('', 404)
+
+@app.route('/api/v1/user/register', methods=['POST'])
+def create_user():
+    new_user = request.get_json()
+    _db_driver.create_user(new_user)
+    return ('', 201)
+
 db_driver.close()
 
 if __name__ == '__main__':
