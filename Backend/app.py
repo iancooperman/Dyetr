@@ -59,6 +59,7 @@ def post_food():
     return '', 201
 
 
+#URL param id
 @app.route('/api/v1/user', methods=['GET'])
 def get_user():
     user_id = request.args.get('id')
@@ -68,6 +69,15 @@ def get_user():
     else:
         return ('', 404)
 
+"""
+Expects JSON following this format
+{
+name: <str>,
+age: <int>,
+weight: <int>,
+calorie_goal: <int>
+}
+"""
 @app.route('/api/v1/user/register', methods=['POST'])
 def create_user():
     new_user = request.get_json()
