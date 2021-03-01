@@ -21,7 +21,7 @@ def recommend():
     except KeyError as e:
         return ({"status": f"{str(e)}"}, 500)
     except AssertionError as e:
-        return ({"error": '"meal" must be "breakfast", "lunch", or "dinner"'}, 500)
+        return ({"status": "error", "message": '"meal" must be "breakfast", "lunch", or "dinner"'}, 500)
 
     response = _db_driver.recommend_foods(user_id, meal)
     
