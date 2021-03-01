@@ -58,6 +58,32 @@ def post_food():
     _db_driver.create_food_tem(item['id'], item['name'], item['calories'], item['carbohydrates'], item['fat'], item['protein'])
     return '', 201
 
+
+#URL param id
+@app.route('/api/v1/user', methods=['GET'])
+def get_user():
+    user_id = request.args.get('id')
+    resp = _db_driver.get_user_by_id(user_id)
+    if resp:
+        return (resp, 200)
+    else:
+        return ('', 404)
+
+"""
+Expects JSON following this format
+{
+name: <str>,
+age: <int>,
+weight: <int>,
+calorie_goal: <int>
+}
+"""
+@app.route('/api/v1/user/register', methods=['POST'])
+def create_user():
+    new_user = request.get_json()
+    _db_driver.create_user(new_user)
+    return ('', 201)
+
 # URL params should be: /food_eaten?user_id=......&food_id=......&meal_type=......
 @app.route('/api/v1/food_eaten', methods=["GET", "POST"])
 def food_eaten():
