@@ -89,3 +89,22 @@ class db:
 
         with self._db_driver.session() as session:
             session.run(food_deleted)
+
+    def find_food_items_by_text_search(self, search_query):
+        query = "MATCH (f:food) WHERE "
+
+        words = search_query.split(" ")
+        contains_expressions = [f"f.name CONTAINS '{word}' " for word in words]
+
+        query += "AND ".join(contains_expressions)
+        query += "RETURN collect(f) AS foods"
+
+        with self._db_driver.session() as session:
+            result = session.run(query)
+            record = result.single()
+
+            if record:
+                return record.data()
+            else:
+                return None
+  
