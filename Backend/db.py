@@ -47,7 +47,7 @@ class db:
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # CREATE (u)-[:ATE {{timestamp: {eat_time}, meal: {meal_type}}}]->(f)
 
-        with db_driver.session() as session:
+        with self._db_driver.session() as session:
             session.run(new_food_eaten)
     
     """RETURNS: list of food items liked by a provided user"""
@@ -59,7 +59,7 @@ class db:
         # WHERE u.id = {user_id} AND (u)-[:LIKES]->(f)
         # RETURN collect(f)
 
-        with db_driver.session() as session:
+        with self._db_driver.session() as session:
             result = session.run(all_food_liked)
 
         return result
@@ -74,7 +74,7 @@ class db:
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # CREATE (u)-[:LIKES]->(f)
 
-        with db_driver.session() as session:
+        with self._db_driver.session() as session:
             session.run(new_food_liked)
     
     """RETURNS: None
@@ -87,5 +87,5 @@ class db:
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # DELETE r
 
-        with db_driver.session() as session:
+        with self._db_driver.session() as session:
             session.run(food_deleted)
