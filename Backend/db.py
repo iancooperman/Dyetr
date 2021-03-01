@@ -35,7 +35,7 @@ class db:
         with self._db_driver.session() as session:
             result = session.run(all_food_eaten)
 
-        return result, 201
+        return result
     
     """RETURNS: None
        CREATES: New ATE relationship between provided user and food"""
@@ -49,8 +49,6 @@ class db:
 
         with db_driver.session() as session:
             session.run(new_food_eaten)
-
-        return '', 201
     
     """RETURNS: list of food items liked by a provided user"""
     def find_food_liked_by_user(self, user_id: str):
@@ -64,7 +62,7 @@ class db:
         with db_driver.session() as session:
             result = session.run(all_food_liked)
 
-        return result, 201
+        return result
     
     """RETURNS: None
        CREATES: New LIKES relationship between provided user and food"""
@@ -78,8 +76,6 @@ class db:
 
         with db_driver.session() as session:
             session.run(new_food_liked)
-
-        return '', 201
     
     """RETURNS: None
        DELETES: An existing LIKES relationship between provided user and food"""
@@ -93,5 +89,3 @@ class db:
 
         with db_driver.session() as session:
             session.run(food_deleted)
-
-        return '', 201
