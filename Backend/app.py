@@ -1,5 +1,6 @@
 from flask import Flask, request
 from neo4j import GraphDatabase
+from datetime import datetime
 from db import db
 
 # enum
@@ -71,22 +72,25 @@ def create_user():
 # URL params should be: /food_eaten?user_id=......&food_id=......&meal_type=......
 @app.route('/api/v1/food_eaten', methods=["GET", "POST"])
 def food_eaten():
-    if request.method() == "GET":
+    if request.method == "GET":
         if request.args:
+            
+            args = request.args
 
             if "user_id" in args:
                 
                 user_id = args["user_id"]
 
-                eat_time = str(datetime.now())
                 all_food_eaten = _db_driver.find_food_eaten_by_user(user_id)
                 
                 if all_food_eaten:
                     return (all_food_eaten, 200)
                 else:
-                    return '', 404
-    elif request.method() == "POST":
+                    return ('', 404)
+    elif request.method == "POST":
         if request.args:
+            
+            args = request.args
 
             if "user_id" in args:
                 if "food_id" in args:
@@ -99,27 +103,30 @@ def food_eaten():
                         eat_time = str(datetime.now())
                         _db_driver.create_ate_relationship(user_id, food_id, eat_time, meal_type)
                         
-                        return '', 201
+                        return ('', 201)
                     
-# URL params should be: /food_eaten?user_id=......&food_id=......
+# URL params should be: /food_liked?user_id=......&food_id=......
 @app.route('/api/v1/food_liked', methods=["GET", "POST", "DELETE"])
 def food_liked():
-    if request.method() == "GET":
+    if request.method == "GET":
         if request.args:
+            
+            args = request.args
 
             if "user_id" in args:
                 
                 user_id = args["user_id"]
 
-                eat_time = str(datetime.now())
                 all_food_liked = _db_driver.find_food_liked_by_user(user_id)
                 
                 if all_food_liked:
                     return (all_food_liked, 200)
                 else:
-                    return '', 404
-    elif request.method() == "POST":
+                    return ('', 404)
+    elif request.method == "POST":
         if request.args:
+            
+            args = request.args
 
             if "user_id" in args:
                 if "food_id" in args:
@@ -129,9 +136,11 @@ def food_liked():
 
                     _db_driver.create_likes_relationship(self, user_id: str, food_id: str)
                     
-                    return '', 201
-    elif request.method() == "DELETE":
+                    return ('', 201)
+    elif request.method == "DELETE":
         if request.args:
+            
+            args = request.args
 
             if "user_id" in args:
                 if "food_id" in args:
@@ -141,7 +150,7 @@ def food_liked():
 
                     _db_driver.delete_likes_relationship(user_id, food_id)
                     
-                    return '', 201
+                    return ('', 201)
 
 @app.route('/api/v1/search', methods=['GET'])
 def search():
