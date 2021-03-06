@@ -134,7 +134,7 @@ def food_liked():
                     user_id = args["user_id"]
                     food_id = args["food_id"]
 
-                    _db_driver.create_likes_relationship(self, user_id: str, food_id: str)
+                    _db_driver.create_likes_relationship(user_id, food_id)
                     
                     return ('', 201)
     elif request.method == "DELETE":
