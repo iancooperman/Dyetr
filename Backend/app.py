@@ -1,6 +1,5 @@
 from flask import Flask, request
 from neo4j import GraphDatabase
-from datetime import datetime
 from db import db
 
 # enum
@@ -100,11 +99,11 @@ def food_eaten():
                         food_id = args["food_id"]
                         meal_type = args["meal_type"]
 
-                        eat_time = str(datetime.now())
-                        _db_driver.create_ate_relationship(user_id, food_id, eat_time, meal_type)
+                        _db_driver.create_ate_relationship(user_id, food_id, meal_type)
                         
                         return ('', 201)
-                    
+
+# UNUSED     
 # URL params should be: /food_liked?user_id=......&food_id=......
 @app.route('/api/v1/food_liked', methods=["GET", "POST", "DELETE"])
 def food_liked():

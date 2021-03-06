@@ -61,8 +61,8 @@ class db:
     
     """RETURNS: None
        CREATES: New ATE relationship between provided user and food"""
-    def create_ate_relationship(self, user_id: str, food_id: str, eat_time: str, meal_type: str):
-        new_food_eaten = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{timestamp: '{eat_time}', meal: '{meal_type}'}}]->(f)")
+    def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str):
+        new_food_eaten = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: datetime(), meal: '{meal_type}'}}]->(f)")
 
         # Above query (beautified):
         # MATCH (u: User), (f: food)
@@ -73,6 +73,7 @@ class db:
             session.run(new_food_eaten)
     
     """RETURNS: list of food items liked by a provided user"""
+    # UNUSED
     def find_food_liked_by_user(self, user_id: str):
         all_food_liked = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND (u)-[:LIKES]->(f) RETURN collect(f)")
 
@@ -90,6 +91,7 @@ class db:
     
     """RETURNS: None
        CREATES: New LIKES relationship between provided user and food"""
+    # UNUSED
     def create_likes_relationship(self, user_id: str, food_id: str):
         new_food_liked = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:LIKES]->(f)")
 
@@ -103,6 +105,7 @@ class db:
     
     """RETURNS: None
        DELETES: An existing LIKES relationship between provided user and food"""
+    # UNUSED
     def delete_likes_relationship(self, user_id: str, food_id: str):
         food_deleted = (f"MATCH (u: User)-[r:LIKES]->(f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' DELETE r")
 
