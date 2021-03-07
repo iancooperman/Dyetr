@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dyetr">
-        <uses-library android:name="com.google.android.things" />
-
         <activity android:name=".FoodSearchActivity"></activity>
+
     </application>
+
+
+
 
 </manifest>
