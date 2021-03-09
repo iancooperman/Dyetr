@@ -66,8 +66,9 @@ public class FoodSearchActivity extends AppCompatActivity {
                 Log.i("click", "here");
                 Context context = getApplicationContext();
                 String text = searchPlainText.getText().toString();
-                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                toast.show();
+                getSearchResults(text);
+//                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+//                toast.show();
             }
         });
 
@@ -109,5 +110,40 @@ public class FoodSearchActivity extends AppCompatActivity {
 
         Log.i("FoodSearchActivity", "Queueing request.");
         requestQueue.add(recommendationRequest);
+    }
+
+    private void getSearchResults(String searchQuery) {
+        String searchQueryEncoded = null;
+        try {
+            searchQueryEncoded = URLEncoder.encode(searchQuery, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://10.0.2.2:5000/api/v1/search"
+                + "?q=" + searchQueryEncoded;
+
+        Log.i("URL", url);
+
+        StringRequest searchRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                JSONObject jsonObject = null;
+                try {
+                    Log.i("FoodSearchActivity", response);
+                    jsonObject = new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("Search.error", error.toString());
+            }
+        });
+
+        Log.i("FoodSearchActivity", "Queueing request.");
+        requestQueue.add(searchRequest);
     }
 }
