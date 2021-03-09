@@ -15,8 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -30,6 +34,11 @@ public class FoodSearchActivity extends AppCompatActivity {
     private TextView weRecommendTextView;
     private ListView foodListView;
 
+    private String testUserId;
+    private String testMeal;
+
+    private RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +50,14 @@ public class FoodSearchActivity extends AppCompatActivity {
         weRecommendTextView = (TextView) findViewById(R.id.weRecommendTextView);
         foodListView = (ListView) findViewById(R.id.foodListView);
 
+        testUserId = "e493433a-6e29-11eb-8884-0028f8f916b2";
+        testMeal = "breakfast";
+
+        // set up request queue with THE INTENTION OF STOPPING IT WHEN THE ACTIVITY RETURNS A FOOD
+        requestQueue = Volley.newRequestQueue(this);
+
         // request recommendations and add them to foodListView
-        getRecommendations(user_id, meal);
+        getRecommendations(testUserId, testMeal);
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -67,15 +82,29 @@ public class FoodSearchActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = "localhost:5000//api/v1/recommend"
+        String url = "http://localhost:5000/api/v1/recommend"
                 + "?user_id=" + userIdEncoded
                 + "&meal=" + mealEncoded;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        StringRequest recommendationRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
-
+            public void onResponse(String response) {
+                JSONObject jsonObject = null;
+                try {
+                    Log.d("FoodSearchActivity", response);
+                    jsonObject = new JSONObject(response);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        })
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Recommendation.error", error.toString());
+            }
+        });
+
+        requestQueue.add(recommendationRequest);
     }
 }
