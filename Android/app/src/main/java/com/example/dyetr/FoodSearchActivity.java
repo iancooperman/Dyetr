@@ -82,9 +82,11 @@ public class FoodSearchActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = "http://localhost:5000/api/v1/recommend"
+        String url = "http://10.0.2.2:5000/api/v1/recommend"
                 + "?user_id=" + userIdEncoded
                 + "&meal=" + mealEncoded;
+
+        Log.i("URL", url);
 
         StringRequest recommendationRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
