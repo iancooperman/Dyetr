@@ -91,7 +91,7 @@ public class FoodSearchActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 JSONObject jsonObject = null;
                 try {
-                    Log.d("FoodSearchActivity", response);
+                    Log.i("FoodSearchActivity", response);
                     jsonObject = new JSONObject(response);
                 }
                 catch (JSONException e) {
@@ -101,10 +101,11 @@ public class FoodSearchActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Recommendation.error", error.toString());
+                Log.i("Recommendation.error", error.toString());
             }
         });
 
+        Log.i("FoodSearchActivity", "Queueing request.");
         requestQueue.add(recommendationRequest);
     }
 }
