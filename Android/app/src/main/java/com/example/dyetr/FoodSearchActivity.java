@@ -1,6 +1,7 @@
 package com.example.dyetr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -86,7 +87,18 @@ public class FoodSearchActivity extends AppCompatActivity {
         foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                
+                Food clickedFood = foodList.get(position);
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("name", clickedFood.getName());
+                resultIntent.putExtra("id", clickedFood.getId());
+                resultIntent.putExtra("calories", clickedFood.getCalories());
+                resultIntent.putExtra("carbohydrates", clickedFood.getCarbohydrates());
+                resultIntent.putExtra("protein", clickedFood.getProtein());
+                resultIntent.putExtra("fats", clickedFood.getFats());
+
+                setResult(RESULT_OK, resultIntent);
+                finish();
             }
         });
 
