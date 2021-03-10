@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,17 +40,27 @@ public class FoodSearchActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;
 
+    private ArrayList<Food> foodList;
+    private FoodListAdapter foodListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_search);
         Log.i(this.getLocalClassName(), "Activity created.");
 
+        // get all views other than the food list
         searchPlainText = (EditText) findViewById(R.id.searchPlainText);
         searchButton = (Button) findViewById(R.id.searchButton);
         weRecommendTextView = (TextView) findViewById(R.id.weRecommendTextView);
-        foodListView = (ListView) findViewById(R.id.foodListView);
 
+        // set up the food list
+        foodListView = (ListView) findViewById(R.id.foodListView);
+        foodList = new ArrayList<Food>();
+        foodListAdapter = new FoodListAdapter(getApplicationContext(), R.layout.food_layout, foodList);
+        foodListView.setAdapter(foodListAdapter);
+
+        // preset strings for testing
         testUserId = "e493433a-6e29-11eb-8884-0028f8f916b2";
         testMeal = "breakfast";
 
@@ -59,7 +70,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         // request recommendations and add them to foodListView
         getRecommendations(testUserId, testMeal);
 
-
+        // set up functionality for "Go" button
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,8 +78,6 @@ public class FoodSearchActivity extends AppCompatActivity {
                 Context context = getApplicationContext();
                 String text = searchPlainText.getText().toString();
                 getSearchResults(text);
-//                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-//                toast.show();
             }
         });
 
@@ -96,6 +105,24 @@ public class FoodSearchActivity extends AppCompatActivity {
                 try {
                     Log.i("FoodSearchActivity", response);
                     jsonObject = new JSONObject(response);
+
+                    JSONArray foodsInfo = jsonObject.getJSONArray("recommendations");
+                    for (int i = 0; i < foodsInfo.length(); i++) {
+                        JSONObject foodInfo = foodsInfo.getJSONObject(i);
+
+                        String name = foodInfo.getString("name");
+                        String id = foodInfo.getString("id");
+                        double calories = foodInfo.getDouble("calories");
+                        double carbohydrates = foodInfo.getDouble("carbohydrates");
+                        double protein = foodInfo.getDouble("protein");
+                        double fats = foodInfo.getDouble("fat");
+
+                        // create the food object and add it to the food list
+                        Food food = new Food(id, name, calories, carbohydrates, protein, fats);
+                        foodList.add(food);
+                    }
+
+                    foodListAdapter.notifyDataSetChanged();
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
