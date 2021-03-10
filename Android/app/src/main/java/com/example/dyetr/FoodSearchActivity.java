@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,7 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -32,7 +31,7 @@ public class FoodSearchActivity extends AppCompatActivity {
 
     private EditText searchPlainText;
     private Button searchButton;
-    private TextView weRecommendTextView;
+    private TextView statusTextView;
     private ListView foodListView;
 
     private String testUserId;
@@ -52,7 +51,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         // get all views other than the food list
         searchPlainText = (EditText) findViewById(R.id.searchPlainText);
         searchButton = (Button) findViewById(R.id.searchButton);
-        weRecommendTextView = (TextView) findViewById(R.id.weRecommendTextView);
+        statusTextView = (TextView) findViewById(R.id.statusTextView);
 
         // set up the food list
         foodListView = (ListView) findViewById(R.id.foodListView);
@@ -74,10 +73,20 @@ public class FoodSearchActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearFoodList();
+
                 Log.i("click", "here");
                 Context context = getApplicationContext();
-                String text = searchPlainText.getText().toString();
-                getSearchResults(text);
+                String searchQuery = searchPlainText.getText().toString();
+                getSearchResults(searchQuery);
+            }
+        });
+
+        // set up functionality for list items
+        foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                
             }
         });
 
@@ -159,6 +168,35 @@ public class FoodSearchActivity extends AppCompatActivity {
                 try {
                     Log.i("FoodSearchActivity", response);
                     jsonObject = new JSONObject(response);
+
+                    JSONArray foodsInfo = jsonObject.getJSONArray("foods");
+
+                    if (foodsInfo.length() == 1) {
+                        statusTextView.setText(String.valueOf(foodsInfo.length() + " result"));
+                    }
+                    else {
+                        statusTextView.setText(String.valueOf(foodsInfo.length() + " results"));
+                    }
+
+
+                    for (int i = 0; i < foodsInfo.length(); i++) {
+                        JSONObject foodInfo = foodsInfo.getJSONObject(i);
+
+                        String name = foodInfo.getString("name");
+                        String id = foodInfo.getString("id");
+                        double calories = foodInfo.getDouble("calories");
+                        double carbohydrates = foodInfo.getDouble("carbohydrates");
+                        double protein = foodInfo.getDouble("protein");
+                        double fats = foodInfo.getDouble("fat");
+
+                        // create the food object and add it to the food list
+                        Food food = new Food(id, name, calories, carbohydrates, protein, fats);
+                        foodList.add(food);
+                    }
+
+                    foodListAdapter.notifyDataSetChanged();
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -172,5 +210,10 @@ public class FoodSearchActivity extends AppCompatActivity {
 
         Log.i("FoodSearchActivity", "Queueing request.");
         requestQueue.add(searchRequest);
+    }
+
+    private void clearFoodList() {
+        foodList.clear();
+        foodListAdapter.notifyDataSetChanged();
     }
 }
