@@ -26,9 +26,9 @@ class db:
     """RETURNS: list of food items similar to those the inputted user ate at the inputted meal"""
     def recommend_foods(self, user_id, meal):
         query = (" ".join([
-        f"MATCH (u:User {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
-        f"MATCH (u:User {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
-        f"MATCH (u:User {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
+        f"MATCH (u:user {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
+        f"MATCH (u:user {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
+        f"MATCH (u:user {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
         "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
         "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal",
         f"MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)",
@@ -45,10 +45,10 @@ class db:
             
     """RETURNS: list of food items eaten by a provided user"""
     def find_food_eaten_by_user(self, user_id: str):
-        all_food_eaten = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f)")
+        all_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f)")
 
         # Above query (beautified):
-        # MATCH (u: User), (f: food)
+        # MATCH (u: user), (f: food)
         # WHERE u.id = {user_id} AND (u)-[:ATE]->(f)
         # RETURN collect(f)
 
@@ -62,10 +62,10 @@ class db:
     """RETURNS: None
        CREATES: New ATE relationship between provided user and food"""
     def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str):
-        new_food_eaten = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: datetime(), meal: '{meal_type}'}}]->(f)")
+        new_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: datetime(), meal: '{meal_type}'}}]->(f)")
 
         # Above query (beautified):
-        # MATCH (u: User), (f: food)
+        # MATCH (u: user), (f: food)
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # CREATE (u)-[:ATE {{timestamp: {eat_time}, meal: {meal_type}}}]->(f)
 
@@ -75,10 +75,10 @@ class db:
     """RETURNS: list of food items liked by a provided user"""
     # UNUSED
     def find_food_liked_by_user(self, user_id: str):
-        all_food_liked = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND (u)-[:LIKES]->(f) RETURN collect(f)")
+        all_food_liked = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:LIKES]->(f) RETURN collect(f)")
 
         # Above query (beautified):
-        # MATCH (u: User), (f: food)
+        # MATCH (u: user), (f: food)
         # WHERE u.id = {user_id} AND (u)-[:LIKES]->(f)
         # RETURN collect(f)
 
@@ -93,10 +93,10 @@ class db:
        CREATES: New LIKES relationship between provided user and food"""
     # UNUSED
     def create_likes_relationship(self, user_id: str, food_id: str):
-        new_food_liked = (f"MATCH (u: User), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:LIKES]->(f)")
+        new_food_liked = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:LIKES]->(f)")
 
         # Above query (beautified):
-        # MATCH (u: User), (f: food)
+        # MATCH (u: user), (f: food)
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # CREATE (u)-[:LIKES]->(f)
 
@@ -107,10 +107,10 @@ class db:
        DELETES: An existing LIKES relationship between provided user and food"""
     # UNUSED
     def delete_likes_relationship(self, user_id: str, food_id: str):
-        food_deleted = (f"MATCH (u: User)-[r:LIKES]->(f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' DELETE r")
+        food_deleted = (f"MATCH (u: user)-[r:LIKES]->(f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' DELETE r")
 
         # Above query (beautified):
-        # MATCH (u: User)-[r:LIKES]->(f: food)
+        # MATCH (u: user)-[r:LIKES]->(f: food)
         # WHERE u.id = {user_id} AND f.id = {food_id}
         # DELETE r
 
