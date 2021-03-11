@@ -35,8 +35,8 @@ public class FoodSearchActivity extends AppCompatActivity {
     private TextView statusTextView;
     private ListView foodListView;
 
-    private String testUserId;
-    private String testMeal;
+    private String userId;
+    private String meal;
 
     private RequestQueue requestQueue;
 
@@ -60,15 +60,17 @@ public class FoodSearchActivity extends AppCompatActivity {
         foodListAdapter = new FoodListAdapter(getApplicationContext(), R.layout.food_layout, foodList);
         foodListView.setAdapter(foodListAdapter);
 
-        // preset strings for testing
-        testUserId = "e493433a-6e29-11eb-8884-0028f8f916b2";
-        testMeal = "breakfast";
+        // grab info from intent
+        Intent intent = getIntent();
+
+        userId = intent.getStringExtra("userId");
+        meal = intent.getStringExtra("meal");
 
         // set up request queue with THE INTENTION OF STOPPING IT WHEN THE ACTIVITY RETURNS A FOOD
         requestQueue = Volley.newRequestQueue(this);
 
         // request recommendations and add them to foodListView
-        getRecommendations(testUserId, testMeal);
+        getRecommendations(userId, meal);
 
         // set up functionality for "Go" button
         searchButton.setOnClickListener(new View.OnClickListener() {
