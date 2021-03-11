@@ -150,3 +150,5 @@ class db:
         uid = uuid.uuid1()
         with self._db_driver.session() as session:
             session.run(query, id = str(uid), name = new_user['name'], age = new_user['age'], weight = new_user['weight'], calorie_goal = new_user['calorie_goal'])
+
+        return str(uid)
