@@ -1,8 +1,10 @@
-package edu.uci.isaiahar;
+package com.example.dyetr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +29,7 @@ public class UserRegistration extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_user_registration);
 
         Button joinNowBtn = (Button) findViewById(R.id.joinNowButton);
 
@@ -76,13 +78,26 @@ public class UserRegistration extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         // Successfully added user to Neo4j database.
                         responseTextView.setText("Registration Successful");
+                        Log.i("UserRegistration", response.toString());
+
+                        String userId = "haha";
+                        try {
+                            userId = response.getString("user_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Off to the food log!
+                        Intent intent = new Intent(getApplicationContext(), FoodLogActivity.class);
+                        intent.putExtra("userId", userId);
+                        startActivity(intent);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // responseTextView.setText("Registration Unsuccessful. Error: " + error.toString());
-                        responseTextView.setText("Registration Successful");
+                         responseTextView.setText("Registration Unsuccessful. Error: " + error.toString());
+                         Log.i("UserRegistration", error.toString());
                     }
                 }
             );

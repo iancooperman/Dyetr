@@ -61,8 +61,8 @@ public class FoodLogActivity extends AppCompatActivity {
                 //get food search result
                 Food food;
                 MealTime mealTime = MealTime.BREAKFAST;
-                updateBreakfastHeader(food);
-                addFoodItem(food, mealTime);
+//                updateBreakfastHeader(food);
+//                addFoodItem(food, mealTime);
             }
         });
 
@@ -72,8 +72,8 @@ public class FoodLogActivity extends AppCompatActivity {
                 //get food search result
                 Food food;
                 MealTime mealTime = MealTime.LUNCH;
-                updateLunchHeader(food);
-                addFoodItem(food, mealTime);
+//                updateLunchHeader(food);
+//                addFoodItem(food, mealTime);
             }
         });
 
@@ -83,8 +83,8 @@ public class FoodLogActivity extends AppCompatActivity {
                 //get food search result
                 Food food;
                 MealTime mealTime = MealTime.DINNER;
-                updateDinnerHeader(food);
-                addFoodItem(food, mealTime);
+//                updateDinnerHeader(food);
+//                addFoodItem(food, mealTime);
             }
         });
 
