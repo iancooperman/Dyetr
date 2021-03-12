@@ -1,27 +1,40 @@
 package com.example.dyetr;
 
-import android.content.Context;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
-public class FoodLogActivity extends AppCompatActivity {
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.util.Calendar;
+
+public class FoodLogActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private String userId;
 
     private TextView caloriesEaten;
-    private TextView totalCaloriesEaten;
+    private TextView totalCalories;
 
     private TextView breakfastName;
     private TextView breakfastCalories;
@@ -35,6 +48,11 @@ public class FoodLogActivity extends AppCompatActivity {
     private TextView dinnerCalories;
     private Button dinnerAddButton;
 
+    private TextView dateText;
+    private Button changeDateButton;
+
+    private RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +64,7 @@ public class FoodLogActivity extends AppCompatActivity {
 
         //Header
         caloriesEaten = (TextView) findViewById(R.id.caloriesEatenTextView);
-        totalCaloriesEaten =(TextView) findViewById(R.id.totalCaloriesTextView);
+        totalCalories =(TextView) findViewById(R.id.totalCaloriesTextView);
 
         //breakfast
         breakfastName = (TextView) findViewById(R.id.breakfastNameTextView);
@@ -62,6 +80,13 @@ public class FoodLogActivity extends AppCompatActivity {
         dinnerName = (TextView) findViewById(R.id.dinnerNameTextView);
         dinnerCalories = (TextView) findViewById(R.id.dinnerCaloriesTextView);
         dinnerAddButton = (Button) findViewById(R.id.dinnerAddButton);
+
+        //date
+        dateText = (TextView) findViewById(R.id.dateTextView);
+        changeDateButton = (Button) findViewById(R.id.changeDateButton);
+        Calendar c = Calendar.getInstance();
+        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
+        dateText.setText(currentDateString);
 
         breakfastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +142,32 @@ public class FoodLogActivity extends AppCompatActivity {
             }
         });
 
+        changeDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
+
+        // initialize request queue
+        requestQueue = Volley.newRequestQueue(this);
+
+        // set calorie fields
+//        getCaloriesEatenToday();
+        getCalorieGoal(userId);
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
+        dateText.setText(currentDateString);
     }
 
     @Override
@@ -155,10 +206,44 @@ public class FoodLogActivity extends AppCompatActivity {
         //API request
     }
 
-    private int getCalorieGoal(){
-        return 1000;
-        //API request
+    private void getCalorieGoal(String userId){
+        String userIdEncoded = null;
+
+        try {
+            userIdEncoded = URLEncoder.encode(userId, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://10.0.2.2:5000/api/v1/user"
+                + "?id=" + userIdEncoded;
+
+        Log.i("URL", url);
+
+        StringRequest userRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                JSONObject jsonObject = null;
+                try {
+                    Log.i("FoodLogActivity", response);
+                    jsonObject = new JSONObject(response);
+
+                    int calorieGoal = jsonObject.getInt("calorie_goal");
+                    totalCalories.setText(Integer.toString(calorieGoal));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("User.error", error.toString());
+            }
+        });
+
+        requestQueue.add(userRequest);
     }
+
 
     private void addFoodItem(Food foodItem, MealTime mealTime) {
         //MAKE API REQUEST

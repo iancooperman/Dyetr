@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="41dp"
+        android:layout_marginBottom="42dp"
         android:text="Log"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
@@ -18,111 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/breakfastHeaderTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginBottom="6dp"
-        android:text="Breakfast"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
-
-    <TextView
-        android:id="@+id/lunchHeaderTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="19dp"
-        android:layout_marginBottom="14dp"
-        android:text="Lunch"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-    <TextView
-        android:id="@+id/dinnerHeaderTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:text="Dinner"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginEnd="19dp"
-        android:layout_marginBottom="80dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/lunchHeaderTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/breakfastHeaderTextView">
-
-        <TextView
-            android:id="@+id/breakfastNameTextView"
-            android:layout_width="229dp"
-            android:layout_height="35dp"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/breakfastCaloriesTextView"
-            android:layout_width="71dp"
-            android:layout_height="31dp"
-            android:width="150dp"
-            android:textSize="24sp" />
-
-        <Button
-            android:id="@+id/breakfastAddButton"
-            android:layout_width="59dp"
-            android:layout_height="44dp"
-            android:text="+" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="82dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/dinnerHeaderTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lunchHeaderTextView">
-
-        <TextView
-            android:id="@+id/lunchNameTextView"
-            android:layout_width="225dp"
-            android:layout_height="34dp"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/lunchCaloriesTextView"
-            android:layout_width="66dp"
-            android:layout_height="32dp"
-            android:textSize="24sp" />
-
-        <Button
-            android:id="@+id/lunchAddButton"
-            android:layout_width="61dp"
-            android:layout_height="41dp"
-            android:text="+" />
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="9dp"
         android:layout_marginEnd="9dp"
-        android:layout_marginBottom="135dp"
+        android:layout_marginBottom="62dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,12 +53,110 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="81dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/lunchHeaderTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/breakfastHeaderTextView">
+
+        <TextView
+            android:id="@+id/breakfastNameTextView"
+            android:layout_width="229dp"
+            android:layout_height="35dp"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/breakfastCaloriesTextView"
+            android:layout_width="71dp"
+            android:layout_height="31dp"
+            android:width="150dp"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/breakfastAddButton"
+            android:layout_width="59dp"
+            android:layout_height="44dp"
+            android:text="+" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dinnerHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="16dp"
+        android:text="Dinner"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="236dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDateButton">
+
+        <TextView
+            android:id="@+id/lunchNameTextView"
+            android:layout_width="225dp"
+            android:layout_height="34dp"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/lunchCaloriesTextView"
+            android:layout_width="66dp"
+            android:layout_height="32dp"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/lunchAddButton"
+            android:layout_width="61dp"
+            android:layout_height="41dp"
+            android:text="+" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lunchHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginBottom="15dp"
+        android:text="Lunch"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <TextView
+        android:id="@+id/breakfastHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="7dp"
+        android:text="Breakfast"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+    <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="80dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/breakfastHeaderTextView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -191,5 +191,31 @@
             android:text="calories eaten today..."
             android:textSize="18sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="11dp"
+        android:text="Date"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/changeDateButton"
+        app:layout_constraintEnd_toStartOf="@+id/changeDateButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/changeDateButton" />
+
+    <Button
+        android:id="@+id/changeDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="217dp"
+        android:text="Change Date"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dateTextView"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
