@@ -44,8 +44,9 @@ class db:
         return response
             
     """RETURNS: list of food items eaten by a provided user"""
-    def find_food_eaten_by_user(self, user_id: str):
-        all_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f) AS foods")
+    def find_food_eaten_by_user_on_date(self, user_id: str, year: str, month: str, day: str):
+        date_string = f"{year}-{month}-{day}"
+        all_food_eaten = (f"MATCH (u:user)-[r:ATE]-(f:food) WHERE r.time = '{date_string}' AND u.id = '{user_id}' WITH {{food: f, meal: r.meal}} AS data RETURN collect(data) AS results")
 
         # Above query (beautified):
         # MATCH (u: user), (f: food)

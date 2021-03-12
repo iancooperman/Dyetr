@@ -78,8 +78,11 @@ def food_eaten():
             if "user_id" in args:
                 
                 user_id = args["user_id"]
+                year = args["year"]
+                month = args["month"]
+                day = args["day"]
 
-                all_food_eaten = _db_driver.find_food_eaten_by_user(user_id)
+                all_food_eaten = _db_driver.find_food_eaten_by_user_on_date(user_id, year, month, day)
                 
                 if all_food_eaten:
                     return (all_food_eaten, 200)

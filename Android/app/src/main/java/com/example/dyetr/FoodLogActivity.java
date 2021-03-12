@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,12 +61,16 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_log);
 
-        // set calendar
-        calendar = Calendar.getInstance();
+        // initialize request queue
+        requestQueue = Volley.newRequestQueue(this);
 
         // retrieve user id from intent
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
+
+        // set calendar and food by date
+        calendar = Calendar.getInstance();
+        retrieveFoodByDate(userId, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
         //Header
         caloriesEaten = (TextView) findViewById(R.id.caloriesEatenTextView);
@@ -155,9 +160,6 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
-        // initialize request queue
-        requestQueue = Volley.newRequestQueue(this);
-
         // set calorie fields
 //        getCaloriesEatenToday();
         getCalorieGoal(userId);
@@ -172,6 +174,49 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
         String currentDateString = DateFormat.getDateInstance().format(calendar.getTime());
         dateText.setText(currentDateString);
+
+        retrieveFoodByDate(userId, year, month + 1, dayOfMonth);
+    }
+
+    private void retrieveFoodByDate(String userId, int year, int month, int day) {
+        String userIdEncoded = null;
+        String yearEncoded = null;
+        String monthEncoded = null;
+        String dayEncoded = null;
+        try {
+            userIdEncoded = URLEncoder.encode(userId, "utf-8");
+            yearEncoded = URLEncoder.encode(Integer.toString(year), "utf-8");
+            monthEncoded = URLEncoder.encode(Integer.toString(month), "utf-8");
+            dayEncoded = URLEncoder.encode(Integer.toString(day), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://10.0.2.2:5000/api/v1/food_eaten"
+                + "?user_id=" + userIdEncoded
+                + "&year=" + yearEncoded
+                + "&month=" + monthEncoded
+                + "&day=" + dayEncoded;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Food eaten", response);
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("Food eaten.error", error.toString());
+            }
+        });
+
+        requestQueue.add(request);
     }
 
     @Override
