@@ -29,7 +29,7 @@ class db:
         f"MATCH (u:user {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
         f"MATCH (u:user {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
         f"MATCH (u:user {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
-        "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
+        "WHERE breakfast.time = lunch.time = dinner.time",
         "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal",
         f"MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)",
         "WHERE similarity.score > 0",
