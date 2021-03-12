@@ -1,5 +1,6 @@
 package com.example.dyetr;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -97,6 +98,9 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         Calendar c = Calendar.getInstance();
         String currentDateString = DateFormat.getDateInstance().format(c.getTime());
         dateText.setText(currentDateString);
+
+        // calculate what will probably be 0
+        calculateCaloriesEaten();
 
         breakfastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +265,22 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         dinnerName.setText("");
         dinnerCalories.setText("");
         dinnerAddButton.setEnabled(true);
+
+        calculateCaloriesEaten();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void calculateCaloriesEaten() {
+        String breakfastString = (String) breakfastCalories.getText();
+        String lunchString = (String) lunchCalories.getText();
+        String dinnerString = (String) dinnerCalories.getText();
+
+        double breakfastAmount = (breakfastString.equals("")) ? 0 : Double.parseDouble(breakfastString);
+        double lunchAmount = (lunchString.equals("")) ? 0 : Double.parseDouble(lunchString);
+        double dinnerAmount = (dinnerString.equals("")) ? 0 : Double.parseDouble(dinnerString);
+
+        int total = (int) (breakfastAmount + lunchAmount + dinnerAmount);
+        caloriesEaten.setText(Integer.toString(total));
     }
 
     @Override
@@ -391,17 +411,23 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         breakfastName.setText(foodItem.getName());
         breakfastCalories.setText(String.valueOf(foodItem.getCalories()));
         breakfastAddButton.setEnabled(false);
+
+        calculateCaloriesEaten();
     }
 
     private void updateLunchHeader(Food foodItem){
         lunchName.setText(foodItem.getName());
         lunchCalories.setText(String.valueOf(foodItem.getCalories()));
         lunchAddButton.setEnabled(false);
+
+        calculateCaloriesEaten();
     }
 
     private void updateDinnerHeader(Food foodItem){
         dinnerName.setText(foodItem.getName());
         dinnerCalories.setText(String.valueOf(foodItem.getCalories()));
         dinnerAddButton.setEnabled(false);
+
+        calculateCaloriesEaten();
     }
 }
