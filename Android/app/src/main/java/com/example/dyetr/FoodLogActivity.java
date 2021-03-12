@@ -53,10 +53,15 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
     private RequestQueue requestQueue;
 
+    private Calendar calendar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_log);
+
+        // set calendar
+        calendar = Calendar.getInstance();
 
         // retrieve user id from intent
         Intent intent = getIntent();
@@ -161,12 +166,11 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
+        String currentDateString = DateFormat.getDateInstance().format(calendar.getTime());
         dateText.setText(currentDateString);
     }
 
@@ -183,20 +187,27 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
         Food food = new Food(id, name, calories, carbohydrates, protein, fats);
 
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        Log.i("Year", String.valueOf(year));
+        Log.i("month", String.valueOf(month));
+        Log.i("day", String.valueOf(day));
+
         switch (requestCode) {
             case 1:
                 updateBreakfastHeader(food);
-                addFoodItem(food, MealTime.BREAKFAST);
+                addFoodItem(userId, food.getId(), "breakfast", year, month, day);
                 break;
 
             case 2:
                 updateLunchHeader(food);
-                addFoodItem(food, MealTime.LUNCH);
+                addFoodItem(userId, food.getId(), "lunch", year, month, day);
                 break;
 
             case 3:
                 updateDinnerHeader(food);
-                addFoodItem(food, MealTime.DINNER);
+                addFoodItem(userId, food.getId(), "dinner", year, month, day);
                 break;
         }
     }
@@ -244,10 +255,52 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         requestQueue.add(userRequest);
     }
 
+    private void getMealsForDay(String userId, int year, int month, int day) {
 
-    private void addFoodItem(Food foodItem, MealTime mealTime) {
-        //MAKE API REQUEST
     }
+
+    private void addFoodItem(String userId, String foodId, String mealType, int year, int month, int day) {
+        String userIdEncoded = null;
+        String foodIdEncoded = null;
+        String mealTypeEncoded = null;
+        String yearEncoded = null;
+        String monthEncoded = null;
+        String dayEncoded = null;
+        try {
+            userIdEncoded = URLEncoder.encode(userId, "utf-8");
+            foodIdEncoded = URLEncoder.encode(foodId, "utf-8");
+            mealTypeEncoded = URLEncoder.encode(mealType, "utf-8");
+            yearEncoded = URLEncoder.encode(Integer.toString(year), "utf-8");
+            monthEncoded = URLEncoder.encode(Integer.toString(month), "utf-8");
+            dayEncoded = URLEncoder.encode(Integer.toString(day), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        String url = "http://10.0.2.2:5000/api/v1/food_eaten"
+                + "?user_id=" + userIdEncoded
+                + "&food_id=" + foodIdEncoded
+                + "&meal_type=" + mealTypeEncoded
+                + "&year=" + yearEncoded
+                + "&month=" + monthEncoded
+                + "&day=" + dayEncoded;
+
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("FoodLogActivity", "Food added");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("Food eaten.error", error.toString());
+            }
+        });
+
+        requestQueue.add(request);
+    }
+
 
     private void updateBreakfastHeader(Food foodItem){
         breakfastName.setText(foodItem.getName());

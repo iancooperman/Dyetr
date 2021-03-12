@@ -73,7 +73,6 @@ def create_user():
 def food_eaten():
     if request.method == "GET":
         if request.args:
-            
             args = request.args
 
             if "user_id" in args:
@@ -88,7 +87,6 @@ def food_eaten():
                     return ('', 404)
     elif request.method == "POST":
         if request.args:
-            
             args = request.args
 
             if "user_id" in args:
@@ -98,10 +96,13 @@ def food_eaten():
                         user_id = args["user_id"]
                         food_id = args["food_id"]
                         meal_type = args["meal_type"]
+                        year = args["year"]
+                        month = args["month"]
+                        day = args["day"]
 
-                        _db_driver.create_ate_relationship(user_id, food_id, meal_type)
+                        _db_driver.create_ate_relationship(user_id, food_id, meal_type, year, month, day)
                         
-                        return ('', 201)
+                        return ({"status": "success"}, 201)
 
 # UNUSED     
 # URL params should be: /food_liked?user_id=......&food_id=......

@@ -45,7 +45,7 @@ class db:
             
     """RETURNS: list of food items eaten by a provided user"""
     def find_food_eaten_by_user(self, user_id: str):
-        all_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f)")
+        all_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f) AS foods")
 
         # Above query (beautified):
         # MATCH (u: user), (f: food)
@@ -61,8 +61,9 @@ class db:
     
     """RETURNS: None
        CREATES: New ATE relationship between provided user and food"""
-    def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str):
-        new_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: datetime(), meal: '{meal_type}'}}]->(f)")
+    def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str, year: str, month: str, day: str):
+        time_string = f"{year}-{month}-{day}"
+        new_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: '{time_string}', meal: '{meal_type}'}}]->(f)")
 
         # Above query (beautified):
         # MATCH (u: user), (f: food)
