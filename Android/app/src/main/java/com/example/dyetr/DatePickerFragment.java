@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+// Code that enables the use of the Calendar dialog for picking dates
 public class DatePickerFragment extends DialogFragment {
 
     @NonNull

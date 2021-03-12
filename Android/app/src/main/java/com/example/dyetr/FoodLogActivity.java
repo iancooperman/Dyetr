@@ -73,7 +73,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         calendar = Calendar.getInstance();
         loadFoodsByDate(userId, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
-        //Header
+        //Calorie Info
         caloriesEaten = (TextView) findViewById(R.id.caloriesEatenTextView);
         totalCalories =(TextView) findViewById(R.id.totalCaloriesTextView);
 
@@ -99,9 +99,11 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         String currentDateString = DateFormat.getDateInstance().format(c.getTime());
         dateText.setText(currentDateString);
 
-        // calculate what will probably be 0
+        // set calorie fields
+        getCalorieGoal(userId);
         calculateCaloriesEaten();
 
+        // send users to FoodSearchActivity to pick a food to set as breakfast
         breakfastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +122,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
+        // send users to FoodSearchActivity to pick a food to set as lunch
         lunchAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,11 +136,10 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
                 startActivityForResult(intent, 2);
 
-//                updateLunchHeader(food);
-//                addFoodItem(food, mealTime);
             }
         });
 
+        // send users to FoodSearchActivity to pick a food to set as dinner
         dinnerAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,12 +152,10 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
                 intent.putExtra("meal", "dinner");
 
                 startActivityForResult(intent, 3);
-
-//                updateDinnerHeader(food);
-//                addFoodItem(food, mealTime);
             }
         });
 
+        // allow users to change the date they're logging food for
         changeDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,13 +163,9 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
         });
-
-        // set calorie fields
-//        getCaloriesEatenToday();
-        getCalorieGoal(userId);
-
     }
 
+    // Update date text and load appropriate eaten foods after user chooses a date
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         calendar.set(Calendar.YEAR, year);
@@ -182,6 +178,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         loadFoodsByDate(userId, year, month + 1, dayOfMonth);
     }
 
+    // Utility function for retrieving eaten foods from the backend
     private void loadFoodsByDate(String userId, int year, int month, int day) {
         String userIdEncoded = null;
         String yearEncoded = null;
@@ -253,6 +250,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         requestQueue.add(request);
     }
 
+    // Clear the activity of logged foods (used when changing dates)
     private void clearFoods() {
         breakfastName.setText("");
         breakfastCalories.setText("");
@@ -269,6 +267,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         calculateCaloriesEaten();
     }
 
+    // Calculate the number of calories eaten on the set date and update the appropriate Text View
     @SuppressLint("SetTextI18n")
     private void calculateCaloriesEaten() {
         String breakfastString = (String) breakfastCalories.getText();
@@ -284,6 +283,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
     }
 
     @Override
+    // After returning from the FoodSearchActivity with food, update the appropriate Text Views
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -321,11 +321,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         }
     }
 
-    private int getCaloriesEatenToday(){
-        return 100;
-        //API request
-    }
-
+    // Retrieve a user's calorie goal from the backend and update the appropriate Text Views
     private void getCalorieGoal(String userId){
         String userIdEncoded = null;
 
@@ -364,7 +360,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         requestQueue.add(userRequest);
     }
 
-
+    // log a food as eaten in the backend
     private void addFoodItem(String userId, String foodId, String mealType, int year, int month, int day) {
         String userIdEncoded = null;
         String foodIdEncoded = null;
@@ -406,7 +402,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         requestQueue.add(request);
     }
 
-
+    // Utility function for displaying a breakfast food
     private void updateBreakfastHeader(Food foodItem){
         breakfastName.setText(foodItem.getName());
         breakfastCalories.setText(String.valueOf(foodItem.getCalories()));
@@ -415,6 +411,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         calculateCaloriesEaten();
     }
 
+    // Utility function for displaying a lunch food
     private void updateLunchHeader(Food foodItem){
         lunchName.setText(foodItem.getName());
         lunchCalories.setText(String.valueOf(foodItem.getCalories()));
@@ -423,6 +420,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         calculateCaloriesEaten();
     }
 
+    // Utility function for displaying a lunch food
     private void updateDinnerHeader(Food foodItem){
         dinnerName.setText(foodItem.getName());
         dinnerCalories.setText(String.valueOf(foodItem.getCalories()));

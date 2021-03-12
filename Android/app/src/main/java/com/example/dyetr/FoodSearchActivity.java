@@ -106,6 +106,7 @@ public class FoodSearchActivity extends AppCompatActivity {
 
     }
 
+    // Retrieve personal food recommendations from the backend and display them
     private void getRecommendations(String userId, String meal) {
         String userIdEncoded = null;
         String mealEncoded = null;
@@ -162,6 +163,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         requestQueue.add(recommendationRequest);
     }
 
+    // Retrieve search results from the backend and display them
     private void getSearchResults(String searchQuery) {
         String searchQueryEncoded = null;
         try {
@@ -232,6 +234,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         requestQueue.add(searchRequest);
     }
 
+    // Utiltiy function for emptying the food list (used when doing searches)
     private void clearFoodList() {
         foodList.clear();
         foodListAdapter.notifyDataSetChanged();

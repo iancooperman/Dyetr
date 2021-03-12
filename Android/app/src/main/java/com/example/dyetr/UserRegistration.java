@@ -33,6 +33,7 @@ public class UserRegistration extends AppCompatActivity {
 
         Button joinNowBtn = (Button) findViewById(R.id.joinNowButton);
 
+        // Button for submitting user info to backend
         joinNowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +61,7 @@ public class UserRegistration extends AppCompatActivity {
         });
     }
 
+    // Perform the user info submittion
     private void Submit(String name, int age, int weight, int calorieGoal, TextView responseTextView){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);

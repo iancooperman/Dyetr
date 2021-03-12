@@ -1,5 +1,6 @@
 package com.example.dyetr;
 
+// Utility enum representing the 3 traditional meals
 public enum MealTime {
     BREAKFAST("breakfast"),
     LUNCH("lunch"),
