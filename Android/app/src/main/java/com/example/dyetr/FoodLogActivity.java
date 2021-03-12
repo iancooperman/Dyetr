@@ -70,7 +70,7 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
 
         // set calendar and food by date
         calendar = Calendar.getInstance();
-        retrieveFoodByDate(userId, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+        loadFoodsByDate(userId, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
         //Header
         caloriesEaten = (TextView) findViewById(R.id.caloriesEatenTextView);
@@ -175,10 +175,10 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         String currentDateString = DateFormat.getDateInstance().format(calendar.getTime());
         dateText.setText(currentDateString);
 
-        retrieveFoodByDate(userId, year, month + 1, dayOfMonth);
+        loadFoodsByDate(userId, year, month + 1, dayOfMonth);
     }
 
-    private void retrieveFoodByDate(String userId, int year, int month, int day) {
+    private void loadFoodsByDate(String userId, int year, int month, int day) {
         String userIdEncoded = null;
         String yearEncoded = null;
         String monthEncoded = null;
@@ -202,9 +202,39 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
             @Override
             public void onResponse(String response) {
                 Log.i("Food eaten", response);
+
+                // clear screen of any foods on it
+                clearFoods();
+
                 JSONObject jsonObject = null;
                 try {
                     jsonObject = new JSONObject(response);
+                    JSONArray results = jsonObject.getJSONArray("results");
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject result = results.getJSONObject(i);
+                        JSONObject foodJson = result.getJSONObject("food");
+                        String name = foodJson.getString("name");
+                        String id = foodJson.getString("id");
+                        double calories = foodJson.getDouble("calories");
+                        double carbohydrates = foodJson.getDouble("carbohydrates");
+                        double protein = foodJson.getDouble("protein");
+                        double fats = foodJson.getDouble("fat");
+
+                        Food food = new Food(id, name, calories, carbohydrates, protein, fats);
+                        String meal = result.getString("meal");
+
+                        switch (meal) {
+                            case "breakfast":
+                                updateBreakfastHeader(food);
+                                break;
+                            case "lunch":
+                                updateLunchHeader(food);
+                                break;
+                            case "dinner":
+                                updateDinnerHeader(food);
+                                break;
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -217,6 +247,20 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         });
 
         requestQueue.add(request);
+    }
+
+    private void clearFoods() {
+        breakfastName.setText("");
+        breakfastCalories.setText("");
+        breakfastAddButton.setEnabled(true);
+
+        lunchName.setText("");
+        lunchCalories.setText("");
+        lunchAddButton.setEnabled(true);
+
+        dinnerName.setText("");
+        dinnerCalories.setText("");
+        dinnerAddButton.setEnabled(true);
     }
 
     @Override
@@ -300,9 +344,6 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         requestQueue.add(userRequest);
     }
 
-    private void getMealsForDay(String userId, int year, int month, int day) {
-
-    }
 
     private void addFoodItem(String userId, String foodId, String mealType, int year, int month, int day) {
         String userIdEncoded = null;
@@ -321,7 +362,6 @@ public class FoodLogActivity extends AppCompatActivity implements DatePickerDial
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
 
         String url = "http://10.0.2.2:5000/api/v1/food_eaten"
                 + "?user_id=" + userIdEncoded
