@@ -196,20 +196,26 @@ public class FoodSearchActivity extends AppCompatActivity {
                     for (int i = 0; i < foodsInfo.length(); i++) {
                         JSONObject foodInfo = foodsInfo.getJSONObject(i);
 
-                        String name = foodInfo.getString("name");
-                        String id = foodInfo.getString("id");
-                        double calories = foodInfo.getDouble("calories");
-                        double carbohydrates = foodInfo.getDouble("carbohydrates");
-                        double protein = foodInfo.getDouble("protein");
-                        double fats = foodInfo.getDouble("fat");
+                        try {
+                            String name = foodInfo.getString("name");
+                            String id = foodInfo.getString("id");
+                            double calories = foodInfo.getDouble("calories");
+                            double carbohydrates = foodInfo.getDouble("carbohydrates");
+                            double protein = foodInfo.getDouble("protein");
+                            double fats = foodInfo.getDouble("fat");
 
-                        // create the food object and add it to the food list
-                        Food food = new Food(id, name, calories, carbohydrates, protein, fats);
-                        foodList.add(food);
+                            // create the food object and add it to the food list
+                            Food food = new Food(id, name, calories, carbohydrates, protein, fats);
+                            foodList.add(food);
+                        }
+                        catch (JSONException e) {
+                            Log.i("FoodSearchActivity", "Invalid JSON; skipping to next element");
+                            e.printStackTrace();
+                        }
+
                     }
 
                     foodListAdapter.notifyDataSetChanged();
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
