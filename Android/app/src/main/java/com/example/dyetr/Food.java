@@ -1,5 +1,6 @@
 package com.example.dyetr;
 
+// Utility class for storing food info
 public class Food {
     private String id;
     private String name;

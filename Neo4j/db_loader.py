@@ -15,18 +15,20 @@ PASSWORD = 'password'
 
 db_driver = GraphDatabase.driver(CONNECTION_STRING, auth=(USER_NAME, PASSWORD))
 
+# retrive specific nutrient info from a food's nutrient list
 def select_nutrient(food_nutrients_list, nutrient_name):
     for nutrient in food_nutrients_list:
         if nutrient['name'] == nutrient_name:
             return nutrient['amount']
     return None
 
+# create a food node in the Neo4j database
 def create_food_item(food_id, item_name, calories, carbs, fat, protein):
     query = ('CREATE (f:food {id: $id, name: $name, calories: $calories, carbohydrates: $carbohydrates,  fat: $fat, protein: $protein})')
     with db_driver.session() as session:
         session.run(query, id = str(food_id), name = item_name, calories = calories, carbohydrates = carbs, fat = fat, protein = protein)
 
-
+# iterate through eat food item in `usda survey data.json`
 for item in food_items:
     food_id = uuid.uuid1()
     item_name = item['description']

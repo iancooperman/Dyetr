@@ -29,8 +29,8 @@ class db:
         f"MATCH (u:user {{id: '{user_id}'}})-[breakfast:ATE {{meal: '{meal}'}}]->(breakfastFood:food)",
         f"MATCH (u:user {{id: '{user_id}'}})-[lunch:ATE {{meal: '{meal}'}}]->(lunchFood:food)",
         f"MATCH (u:user {{id: '{user_id}'}})-[dinner:ATE {{meal: '{meal}'}}]->(dinnerFood:food)",
-        "WHERE date(breakfast.time) = date(lunch.time) = date(dinner.time)",
-        "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorieGoal",
+        "WHERE breakfast.time = lunch.time = dinner.time",
+        "AND breakfastFood.calories + lunchFood.calories + dinnerFood.calories < u.calorie_goal",
         f"MATCH ({meal}Food)-[similarity:SIMILAR]->(resultFood:food)",
         "WHERE similarity.score > 0",
         "RETURN collect(resultFood) AS recommendations"
@@ -44,8 +44,9 @@ class db:
         return response
             
     """RETURNS: list of food items eaten by a provided user"""
-    def find_food_eaten_by_user(self, user_id: str):
-        all_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND (u)-[:ATE]->(f) RETURN collect(f)")
+    def find_food_eaten_by_user_on_date(self, user_id: str, year: str, month: str, day: str):
+        date_string = f"{year}-{month}-{day}"
+        all_food_eaten = (f"MATCH (u:user)-[r:ATE]-(f:food) WHERE r.time = '{date_string}' AND u.id = '{user_id}' WITH {{food: f, meal: r.meal}} AS data RETURN collect(data) AS results")
 
         # Above query (beautified):
         # MATCH (u: user), (f: food)
@@ -61,8 +62,9 @@ class db:
     
     """RETURNS: None
        CREATES: New ATE relationship between provided user and food"""
-    def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str):
-        new_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: datetime(), meal: '{meal_type}'}}]->(f)")
+    def create_ate_relationship(self, user_id: str, food_id: str, meal_type: str, year: str, month: str, day: str):
+        time_string = f"{year}-{month}-{day}"
+        new_food_eaten = (f"MATCH (u: user), (f: food) WHERE u.id = '{user_id}' AND f.id = '{food_id}' CREATE (u)-[:ATE {{time: '{time_string}', meal: '{meal_type}'}}]->(f)")
 
         # Above query (beautified):
         # MATCH (u: user), (f: food)

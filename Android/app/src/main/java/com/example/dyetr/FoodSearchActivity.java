@@ -106,6 +106,7 @@ public class FoodSearchActivity extends AppCompatActivity {
 
     }
 
+    // Retrieve personal food recommendations from the backend and display them
     private void getRecommendations(String userId, String meal) {
         String userIdEncoded = null;
         String mealEncoded = null;
@@ -162,6 +163,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         requestQueue.add(recommendationRequest);
     }
 
+    // Retrieve search results from the backend and display them
     private void getSearchResults(String searchQuery) {
         String searchQueryEncoded = null;
         try {
@@ -196,20 +198,26 @@ public class FoodSearchActivity extends AppCompatActivity {
                     for (int i = 0; i < foodsInfo.length(); i++) {
                         JSONObject foodInfo = foodsInfo.getJSONObject(i);
 
-                        String name = foodInfo.getString("name");
-                        String id = foodInfo.getString("id");
-                        double calories = foodInfo.getDouble("calories");
-                        double carbohydrates = foodInfo.getDouble("carbohydrates");
-                        double protein = foodInfo.getDouble("protein");
-                        double fats = foodInfo.getDouble("fat");
+                        try {
+                            String name = foodInfo.getString("name");
+                            String id = foodInfo.getString("id");
+                            double calories = foodInfo.getDouble("calories");
+                            double carbohydrates = foodInfo.getDouble("carbohydrates");
+                            double protein = foodInfo.getDouble("protein");
+                            double fats = foodInfo.getDouble("fat");
 
-                        // create the food object and add it to the food list
-                        Food food = new Food(id, name, calories, carbohydrates, protein, fats);
-                        foodList.add(food);
+                            // create the food object and add it to the food list
+                            Food food = new Food(id, name, calories, carbohydrates, protein, fats);
+                            foodList.add(food);
+                        }
+                        catch (JSONException e) {
+                            Log.i("FoodSearchActivity", "Invalid JSON; skipping to next element");
+                            e.printStackTrace();
+                        }
+
                     }
 
                     foodListAdapter.notifyDataSetChanged();
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -226,6 +234,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         requestQueue.add(searchRequest);
     }
 
+    // Utiltiy function for emptying the food list (used when doing searches)
     private void clearFoodList() {
         foodList.clear();
         foodListAdapter.notifyDataSetChanged();

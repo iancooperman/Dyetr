@@ -9,7 +9,6 @@ PASSWORD = 'password'
 
 
 app = Flask(__name__)
-db_driver = GraphDatabase.driver(CONNECTION_STRING, auth=(USER_NAME, PASSWORD))
 _db_driver = db(CONNECTION_STRING, (USER_NAME, PASSWORD))
 
 @app.route('/api/v1/recommend', methods=['GET'])
@@ -73,14 +72,16 @@ def create_user():
 def food_eaten():
     if request.method == "GET":
         if request.args:
-            
             args = request.args
 
             if "user_id" in args:
                 
                 user_id = args["user_id"]
+                year = args["year"]
+                month = args["month"]
+                day = args["day"]
 
-                all_food_eaten = _db_driver.find_food_eaten_by_user(user_id)
+                all_food_eaten = _db_driver.find_food_eaten_by_user_on_date(user_id, year, month, day)
                 
                 if all_food_eaten:
                     return (all_food_eaten, 200)
@@ -88,7 +89,6 @@ def food_eaten():
                     return ('', 404)
     elif request.method == "POST":
         if request.args:
-            
             args = request.args
 
             if "user_id" in args:
@@ -98,10 +98,13 @@ def food_eaten():
                         user_id = args["user_id"]
                         food_id = args["food_id"]
                         meal_type = args["meal_type"]
+                        year = args["year"]
+                        month = args["month"]
+                        day = args["day"]
 
-                        _db_driver.create_ate_relationship(user_id, food_id, meal_type)
+                        _db_driver.create_ate_relationship(user_id, food_id, meal_type, year, month, day)
                         
-                        return ('', 201)
+                        return ({"status": "success"}, 201)
 
 # UNUSED     
 # URL params should be: /food_liked?user_id=......&food_id=......
@@ -167,7 +170,6 @@ def search():
         return "", 500
 
 
-db_driver.close()
 
 if __name__ == '__main__':
     app.run()

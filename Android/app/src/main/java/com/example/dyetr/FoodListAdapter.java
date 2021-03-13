@@ -14,6 +14,7 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+// Adapter for the list of foods in FoodSearchActivity
 public class FoodListAdapter extends ArrayAdapter<Food> {
     private Context context;
     int resource;
