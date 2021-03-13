@@ -9,7 +9,6 @@ PASSWORD = 'password'
 
 
 app = Flask(__name__)
-db_driver = GraphDatabase.driver(CONNECTION_STRING, auth=(USER_NAME, PASSWORD))
 _db_driver = db(CONNECTION_STRING, (USER_NAME, PASSWORD))
 
 @app.route('/api/v1/recommend', methods=['GET'])
@@ -171,7 +170,6 @@ def search():
         return "", 500
 
 
-db_driver.close()
 
 if __name__ == '__main__':
     app.run()
